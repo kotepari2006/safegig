@@ -1,0 +1,204 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Demo Student",
+      "email": "student@safegig.demo",
+      "role": "student",
+      "skills": [
+        "Python",
+        "SQL",
+        "Cybersecurity"
+      ],
+      "password": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f"
+    },
+    {
+      "id": 2,
+      "name": "Demo Employer",
+      "email": "employer@safegig.demo",
+      "role": "employer",
+      "company": "SafeTech Labs"
+    },
+    {
+      "id": 3,
+      "name": "pari kote",
+      "email": "kotepari2006@gmail.com",
+      "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+      "role": "student",
+      "skills": [
+        "python",
+        "html",
+        "java",
+        "sql"
+      ],
+      "company": "",
+      "createdAt": "2026-08-22T11:55:05.764Z"
+    },
+    {
+      "id": 4,
+      "name": "asha",
+      "email": "asha08@gmail.com",
+      "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+      "role": "employer",
+      "skills": [],
+      "company": "TCS",
+      "createdAt": "2026-08-22T12:22:27.017Z"
+    },
+    {
+      "id": 99,
+      "name": "System Admin",
+      "email": "admin@safegig.demo",
+      "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+      "role": "admin",
+      "company": "SafeGig Enterprise Admin"
+    },
+    {
+      "id": 2,
+      "name": "Rahul Sharma (Employee)",
+      "email": "employee@safegig.demo",
+      "password": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+      "role": "student",
+      "skills": [
+        "Java",
+        "Spring Boot",
+        "AWS",
+        "Docker"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "pari kote",
+      "email": "parikote08@gmail.com",
+      "password": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+      "role": "admin",
+      "skills": [],
+      "company": "",
+      "createdAt": "2026-09-25T12:29:30.522Z"
+    }
+  ],
+  "projects": [],
+  "nextProjectId": 103,
+  "nextUserId": 6,
+  "sessions": [
+    {
+      "token": "5bd0d58e8a1b88a932c9045af7918ba5541b9a9965d8ac63fb450fbf8a0b1478",
+      "userId": 99,
+      "createdAt": "2026-09-25T12:15:29.596Z"
+    },
+    {
+      "token": "2bc078e6b54aa583ce84cd3f4bf756b02b391031c0b00c31418ab8ebf0d53a1e",
+      "userId": 1,
+      "createdAt": "2026-09-25T12:15:29.796Z"
+    },
+    {
+      "token": "81718ca90c3bdbef41d5f32bf46b554bfc212c257245258c54dd0a7fb730cf48",
+      "userId": 99,
+      "createdAt": "2026-09-25T12:26:57.861Z"
+    },
+    {
+      "token": "914b639a0981c96b051b534fd145edeaec1eb7c2f5107598522258367089e8ed",
+      "userId": 1,
+      "createdAt": "2026-09-25T12:26:57.871Z"
+    },
+    {
+      "token": "471c76f4ab30b9019d8113d77e3c21fd395b4abf6aa53aab909cedf17b66b806",
+      "userId": 5,
+      "createdAt": "2026-09-25T12:29:30.522Z"
+    }
+  ],
+  "applications": [
+    {
+      "id": "app_1007",
+      "userId": 1,
+      "userName": "Demo Student",
+      "userEmail": "student@safegig.demo",
+      "mncId": "google",
+      "company": "Google",
+      "positionTitle": "Cloud Solutions Architect",
+      "deadline": "2026-11-15",
+      "appliedAt": "2026-09-25T12:15:29.800Z",
+      "status": "Accepted",
+      "notes": "Testing application submission",
+      "updatedAt": "2026-09-25T12:26:57.882Z"
+    },
+    {
+      "id": "app_1001",
+      "userId": 1,
+      "userName": "Demo Student",
+      "userEmail": "student@safegig.demo",
+      "mncId": "google",
+      "company": "Google",
+      "positionTitle": "Software Engineer (SDE I/II)",
+      "appliedAt": "2026-09-24T10:30:00.000Z",
+      "deadline": "2026-10-30",
+      "status": "Accepted",
+      "notes": "Matches top tier Python & Algorithms profile"
+    },
+    {
+      "id": "app_1002",
+      "userId": 1,
+      "userName": "Demo Student",
+      "userEmail": "student@safegig.demo",
+      "mncId": "microsoft",
+      "company": "Microsoft",
+      "positionTitle": "Full Stack Web Engineer",
+      "appliedAt": "2026-09-23T14:15:00.000Z",
+      "deadline": "2026-10-25",
+      "status": "Under Review",
+      "notes": "Applied via SafeGig 1-click apply"
+    },
+    {
+      "id": "app_1003",
+      "userId": 1,
+      "userName": "Demo Student",
+      "userEmail": "student@safegig.demo",
+      "mncId": "amazon",
+      "company": "Amazon",
+      "positionTitle": "AWS Cloud Support Engineer",
+      "appliedAt": "2026-09-20T09:00:00.000Z",
+      "deadline": "2026-10-15",
+      "status": "Rejected",
+      "notes": "Position requirement mismatched"
+    },
+    {
+      "id": "app_1004",
+      "userId": 2,
+      "userName": "Rahul Sharma (Employee)",
+      "userEmail": "employee@safegig.demo",
+      "mncId": "amazon",
+      "company": "Amazon",
+      "positionTitle": "Software Development Engineer (SDE-1)",
+      "appliedAt": "2026-09-25T11:45:00.000Z",
+      "deadline": "2026-10-31",
+      "status": "Accepted",
+      "notes": "Experienced candidate with Java & AWS"
+    },
+    {
+      "id": "app_1005",
+      "userId": 2,
+      "userName": "Rahul Sharma (Employee)",
+      "userEmail": "employee@safegig.demo",
+      "mncId": "apple",
+      "company": "Apple",
+      "positionTitle": "iOS Software Engineer",
+      "appliedAt": "2026-09-22T16:20:00.000Z",
+      "deadline": "2026-11-05",
+      "status": "Under Review",
+      "notes": "Mobile software applicant"
+    },
+    {
+      "id": "app_1006",
+      "userId": 2,
+      "userName": "Rahul Sharma (Employee)",
+      "userEmail": "employee@safegig.demo",
+      "mncId": "meta",
+      "company": "Meta",
+      "positionTitle": "Frontend Infrastructure Engineer",
+      "appliedAt": "2026-09-21T08:10:00.000Z",
+      "deadline": "2026-10-28",
+      "status": "Under Review",
+      "notes": "Frontend specialist"
+    }
+  ],
+  "nextAppId": 1008
+}

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MNC Job Portal, Applications & AI Resume Matcher | SafeGig</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= TOP NAVBAR ================= -->
+  <nav class="navbar">
+    <a href="#" class="brand" onclick="switchTab('matcher')">
+      Safe<span>Gig</span>
+      <span class="brand-badge">MNC & Applications Hub</span>
+    </a>
+
+    <div class="nav-tabs">
+      <button class="nav-tab-btn active" id="tabBtnMatcher" onclick="switchTab('matcher')">
+        🎯 AI Resume Matcher
+      </button>
+      <button class="nav-tab-btn" id="tabBtnDirectory" onclick="switchTab('directory')">
+        🏢 MNC Job Directory
+      </button>
+      <button class="nav-tab-btn" id="tabBtnApplications" onclick="switchTab('applications')">
+        💼 My Applications
+      </button>
+      <button class="nav-tab-btn" id="tabBtnAdmin" onclick="switchTab('admin')">
+        👑 Admin Portal
+      </button>
+      <button class="nav-tab-btn" id="tabBtnBooster" onclick="switchTab('booster')">
+        ⚡ Live Skill Booster
+      </button>
+    </div>
+
+    <!-- USER AUTH CONTAINER IN NAVBAR -->
+    <div class="nav-user-area" id="navUserArea">
+      <!-- Rendered via JS based on login state -->
+      <button class="auth-modal-btn" onclick="openAuthModal()">
+        🔑 Login / Register
+      </button>
+    </div>
+  </nav>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="main-container">
+
+    <!-- HERO BANNER -->
+    <header class="hero-banner">
+      <div class="hero-pill">
+        ✨ SafeGig MNC Career Platform v2.5 — Active Hiring & Application Tracker
+      </div>
+      <h1 class="hero-title">
+        Apply to <span>Top MNCs</span> & Track Application Status
+      </h1>
+      <p class="hero-subtitle">
+        Instant resume matching across 35+ Fortune 500 MNCs. Apply directly, view deadlines, track application timestamps, and get real-time Accepted / Rejected updates.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-val" id="totalMncStat">35+</div>
+          <div class="stat-lbl">Global MNCs</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">80+</div>
+          <div class="stat-lbl">Active Job Openings</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="totalAppsStat">6</div>
+          <div class="stat-lbl">Total Applications</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">Real-Time</div>
+          <div class="stat-lbl">Admin Status Updates</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= TAB 1: RESUME MATCHER ================= -->
+    <section id="matcherTab" class="tab-content">
+      <div class="matcher-layout">
+        
+        <!-- LEFT: UPLOAD & INPUT PANEL -->
+        <aside class="upload-panel">
+          <h2 class="panel-title">
+            📄 Resume Parser
+          </h2>
+
+          <!-- PRESET RESUMES SELECTOR -->
+          <div class="presets-box">
+            <div class="presets-label">
+              <span>Try 1-Click Preset Resumes:</span>
+            </div>
+            <div class="presets-grid">
+              <button class="preset-btn" onclick="loadPreset('fullstack')">
+                💻 Full-Stack Dev
+              </button>
+              <button class="preset-btn" onclick="loadPreset('datascience')">
+                🤖 Data Scientist
+              </button>
+              <button class="preset-btn" onclick="loadPreset('devops')">
+                ☁️ DevOps Engineer
+              </button>
+              <button class="preset-btn" onclick="loadPreset('cybersecurity')">
+                🛡️ Cyber Security
+              </button>
+            </div>
+          </div>
+
+          <!-- DROPZONE -->
+          <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+            <div class="dropzone-icon">📁</div>
+            <div class="dropzone-text">Click to upload or drag & drop</div>
+            <div class="dropzone-sub">Supports PDF, DOCX, TXT files</div>
+            <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx,.txt" onchange="handleFileUpload(event)">
+          </div>
+
+          <!-- TEXT INPUT -->
+          <label class="textarea-label" for="resumeText">
+            Or Paste Resume Content / Bio Text:
+          </label>
+          <textarea id="resumeText" class="resume-textarea" placeholder="Paste your resume summary, technical skills, projects, and work experience here..."></textarea>
+
+          <button class="action-btn" onclick="analyzeResume()">
+            <span>🔍 Analyze Resume & Match MNCs</span>
+          </button>
+        </aside>
+
+        <!-- RIGHT: RESULTS PANEL -->
+        <div class="results-panel">
+          
+          <!-- RESUME OVERVIEW CARD -->
+          <div class="overview-card" id="overviewCard">
+            <div class="overview-box">
+              <div class="ats-ring" style="--ats-val: 88;">
+                <span class="ats-score-text" id="atsScoreVal">88%</span>
+              </div>
+              <div class="overview-details">
+                <h4>ATS Compatibility Score</h4>
+                <p id="atsSubtext">Strong keyword optimization</p>
+              </div>
+            </div>
+
+            <div class="overview-box">
+              <div class="overview-details">
+                <h4 id="detectedExpVal">Mid-Level (2-5 yrs)</h4>
+                <p>Detected Experience Tier</p>
+              </div>
+            </div>
+
+            <div class="overview-box">
+              <div class="overview-details">
+                <h4 id="extractedSkillsCountVal">12 Skills</h4>
+                <p>Extracted Tech Keywords</p>
+              </div>
+            </div>
+
+            <!-- SKILLS TAGS -->
+            <div class="skills-wrapper">
+              <div class="skills-title">
+                <span>Extracted Resume Skills:</span>
+              </div>
+              <div class="tags-flex" id="extractedSkillsContainer">
+                <span class="skill-tag">Java</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">SQL</span>
+                <span class="skill-tag">AWS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOP 10 HIGH MATCH MNCS -->
+          <div>
+            <div class="section-header">
+              <h2 class="section-title">
+                🏆 Top 10 High Match MNCs
+                <span class="badge-count">1 - 10</span>
+              </h2>
+              <span class="top-badge">75% - 100% Fit</span>
+            </div>
+
+            <div class="mnc-cards-list" id="top10Container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- 10 MILD MATCH MNCS -->
+          <div style="margin-top: 1rem;">
+            <div class="section-header">
+              <h2 class="section-title">
+                💡 10 Mild (Moderate Fit) MNCs
+                <span class="badge-count">11 - 20</span>
+              </h2>
+              <span class="mild-badge">45% - 74% Growth Fit</span>
+            </div>
+
+            <div class="mnc-cards-list" id="mild10Container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: MNC DIRECTORY ================= -->
+    <section id="directoryTab" class="tab-content" style="display:none">
+      <div class="section-header" style="margin-bottom: 1.5rem;">
+        <h2 class="section-title">
+          🏢 Explore All MNCs & Apply to Job Openings
+        </h2>
+      </div>
+
+      <div class="directory-controls">
+        <input type="text" id="dirSearchInput" class="search-input" placeholder="Search MNC by name, skill (e.g. Java, Python, AWS), or domain..." oninput="filterDirectory()">
+        <select id="dirDomainSelect" class="domain-select" onchange="filterDirectory()">
+          <option value="All">All Industry Domains</option>
+          <option value="Tech">Tech & Cloud</option>
+          <option value="Enterprise">Enterprise Software & ERP</option>
+          <option value="Services">IT Services & Consulting</option>
+          <option value="Consulting">Big 4 Consulting</option>
+          <option value="FinTech">Banking & FinTech</option>
+          <option value="Automotive">Automotive & IoT</option>
+          <option value="Hardware">Hardware & AI Computing</option>
+        </select>
+      </div>
+
+      <div class="directory-grid" id="directoryGrid">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: MY APPLICATIONS (STUDENT / EMPLOYEE) ================= -->
+    <section id="applicationsTab" class="tab-content" style="display:none">
+      <div class="section-header" style="margin-bottom: 1.5rem;">
+        <h2 class="section-title">
+          💼 My Applications Dashboard
+        </h2>
+        <span class="top-badge" id="myAppsRoleBadge">Student / Candidate View</span>
+      </div>
+
+      <!-- DEMO QUICK LOGIN PROMPT BANNER FOR GUESTS -->
+      <div class="guest-auth-prompt" id="guestAppsPrompt" style="display:none;">
+        <div class="prompt-icon">🔒</div>
+        <div class="prompt-content">
+          <h3>Log in to view your submitted job applications</h3>
+          <p>Sign in as a student or employee to track where you have applied, view deadlines, and check if your application is Accepted, Rejected, or Under Review.</p>
+          <div class="quick-login-grid" style="margin-top: 1rem;">
+            <button class="quick-btn student-quick" onclick="quickLogin('student@safegig.demo', 'password123')">
+              ⚡ Quick Login as Demo Student
+            </button>
+            <button class="quick-btn employee-quick" onclick="quickLogin('employee@safegig.demo', 'password123')">
+              ⚡ Quick Login as Demo Employee
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPLICATIONS CONTENT -->
+      <div id="applicationsContent">
+        <!-- SUMMARY STATS -->
+        <div class="apps-stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-val" id="myTotalAppsVal">0</div>
+            <div class="stat-card-lbl">Total Submitted</div>
+          </div>
+          <div class="stat-card accepted-card">
+            <div class="stat-card-val" id="myAcceptedAppsVal">0</div>
+            <div class="stat-card-lbl">🟢 Accepted</div>
+          </div>
+          <div class="stat-card pending-card">
+            <div class="stat-card-val" id="myPendingAppsVal">0</div>
+            <div class="stat-card-lbl">🟡 Under Review</div>
+          </div>
+          <div class="stat-card rejected-card">
+            <div class="stat-card-val" id="myRejectedAppsVal">0</div>
+            <div class="stat-card-lbl">🔴 Rejected</div>
+          </div>
+        </div>
+
+        <!-- FILTER CONTROLS -->
+        <div class="app-filters-row">
+          <span class="filter-lbl">Filter Applications:</span>
+          <button class="filter-pill active" onclick="filterMyApps('ALL', this)">All Applications</button>
+          <button class="filter-pill" onclick="filterMyApps('Accepted', this)">🟢 Accepted Only</button>
+          <button class="filter-pill" onclick="filterMyApps('Under Review', this)">🟡 Under Review</button>
+          <button class="filter-pill" onclick="filterMyApps('Rejected', this)">🔴 Rejected Only</button>
+        </div>
+
+        <!-- APPLICATIONS LIST -->
+        <div class="applications-grid" id="myApplicationsGrid">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: ADMIN PORTAL ================= -->
+    <section id="adminTab" class="tab-content" style="display:none">
+      <div class="section-header" style="margin-bottom: 1.5rem;">
+        <h2 class="section-title">
+          👑 Admin Applications & Company Metrics Portal
+        </h2>
+        <span class="top-badge" style="background: linear-gradient(135deg, #EC4899, #8B5CF6);">Admin Control Center</span>
+      </div>
+
+      <!-- GUEST PROMPT FOR ADMIN -->
+      <div class="guest-auth-prompt" id="guestAdminPrompt" style="display:none;">
+        <div class="prompt-icon">🛡️</div>
+        <div class="prompt-content">
+          <h3>Admin Login Required</h3>
+          <p>Please log in with an Administrator account to view applicant metrics per company, check application deadlines, timestamps, and manage Accepted/Rejected statuses.</p>
+          <div style="margin-top: 1rem;">
+            <button class="quick-btn admin-quick" onclick="quickLogin('admin@safegig.demo', 'admin123')">
+              ⚡ Quick Login as Demo Admin
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN DASHBOARD CONTENT -->
+      <div id="adminContent">
+        <!-- METRICS OVERVIEW -->
+        <div class="apps-stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-val" id="adminTotalAppsVal">0</div>
+            <div class="stat-card-lbl">Total Candidates Applied</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-val" id="adminTotalCompaniesVal">0</div>
+            <div class="stat-card-lbl">Active Companies</div>
+          </div>
+          <div class="stat-card accepted-card">
+            <div class="stat-card-val" id="adminAcceptedVal">0</div>
+            <div class="stat-card-lbl">🟢 Accepted Candidates</div>
+          </div>
+          <div class="stat-card pending-card">
+            <div class="stat-card-val" id="adminPendingVal">0</div>
+            <div class="stat-card-lbl">🟡 Pending Review</div>
+          </div>
+          <div class="stat-card rejected-card">
+            <div class="stat-card-val" id="adminRejectedVal">0</div>
+            <div class="stat-card-lbl">🔴 Rejected Candidates</div>
+          </div>
+        </div>
+
+        <!-- COMPANY APPLICANTS BREAKDOWN -->
+        <div style="margin-bottom: 2rem;">
+          <h3 class="sub-section-title">🏢 Company Applicant Counts Breakdown:</h3>
+          <div class="company-stats-grid" id="adminCompanyStatsGrid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- MASTER APPLICATIONS TABLE & MANAGE STATUS -->
+        <div>
+          <div class="section-header" style="margin-bottom: 1rem;">
+            <h3 class="sub-section-title">📋 All Candidate Applications & Status Control:</h3>
+            <div class="admin-table-search">
+              <input type="text" id="adminSearchInput" class="search-input" placeholder="Filter by candidate name, email, or company..." oninput="renderAdminTable()">
+              <select id="adminStatusFilter" class="domain-select" onchange="renderAdminTable()">
+                <option value="ALL">All Statuses</option>
+                <option value="Accepted">Accepted Only</option>
+                <option value="Under Review">Under Review Only</option>
+                <option value="Rejected">Rejected Only</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Candidate Info</th>
+                  <th>Company & Position</th>
+                  <th>Applied Time & Date</th>
+                  <th>Application Deadline</th>
+                  <th>Status</th>
+                  <th>Admin Action (Change Status)</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: LIVE SKILL BOOSTER ================= -->
+    <section id="boosterTab" class="tab-content" style="display:none">
+      <div class="hero-banner" style="padding: 1.75rem; text-align: left; margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡ Live Skill Booster & Re-Scorer</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Toggle skills below to instantly see how adding target technologies recalculates your Top 10 and 10 Mild MNC rankings in real time!
+        </p>
+      </div>
+
+      <div class="overview-card" style="margin-bottom: 1.5rem;">
+        <div style="grid-column: span 3;">
+          <h4 style="margin-bottom: 0.75rem;">Click to Add / Remove Skills to Your Profile:</h4>
+          <div class="tags-flex" id="boosterSkillsToggleGrid">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h3 class="section-title">Real-Time Recalculated Top Matches:</h3>
+      </div>
+      <div class="mnc-cards-list" id="boosterResultsContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= AUTH MODAL (LOGIN / SIGNUP) ================= -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-card auth-modal-card">
+      <button class="close-modal-btn" onclick="closeAuthModal()">✕</button>
+      
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tabLoginStudent" onclick="switchAuthTab('loginStudent')">
+          🎓 Student / Candidate Login
+        </button>
+        <button class="auth-tab-btn" id="tabLoginAdmin" onclick="switchAuthTab('loginAdmin')">
+          👑 Admin Login
+        </button>
+        <button class="auth-tab-btn" id="tabSignup" onclick="switchAuthTab('signup')">
+          📝 Register Account
+        </button>
+      </div>
+
+      <!-- QUICK DEMO LOGINS -->
+      <div class="quick-demo-box">
+        <div class="quick-demo-title">⚡ 1-Click Quick Demo Sign-In:</div>
+        <div class="quick-demo-btns">
+          <button class="demo-chip" onclick="quickLogin('student@safegig.demo', 'password123')">
+            🎓 Demo Student
+          </button>
+          <button class="demo-chip" onclick="quickLogin('employee@safegig.demo', 'password123')">
+            👔 Demo Employee
+          </button>
+          <button class="demo-chip admin-chip" onclick="quickLogin('admin@safegig.demo', 'admin123')">
+            👑 Demo Admin
+          </button>
+        </div>
+      </div>
+
+      <div id="authErrorMsg" class="auth-error" style="display:none;"></div>
+      <div id="authSuccessMsg" class="auth-success" style="display:none;"></div>
+
+      <!-- FORM: LOGIN -->
+      <form id="loginForm" onsubmit="handleAuthSubmit(event, 'login')">
+        <div class="form-group">
+          <label for="authEmail">Email Address</label>
+          <input type="email" id="authEmail" class="form-control" placeholder="student@safegig.demo or admin@safegig.demo" required>
+        </div>
+
+        <div class="form-group">
+          <label for="authPassword">Password</label>
+          <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <input type="hidden" id="loginRole" value="student">
+
+        <button type="submit" class="action-btn" style="margin-top: 1rem;">
+          <span id="loginSubmitBtnText">🔑 Sign In</span>
+        </button>
+      </form>
+
+      <!-- FORM: SIGNUP -->
+      <form id="signupForm" style="display:none;" onsubmit="handleAuthSubmit(event, 'signup')">
+        <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" class="form-control" placeholder="e.g. Ananya Roy" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signupEmail">Email Address</label>
+          <input type="email" id="signupEmail" class="form-control" placeholder="ananya@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signupPassword">Password (min 6 chars)</label>
+          <input type="password" id="signupPassword" class="form-control" placeholder="••••••••" required minlength="6">
+        </div>
+
+        <div class="form-group">
+          <label for="signupRole">Select Account Type</label>
+          <select id="signupRole" class="form-control">
+            <option value="student">Student / Employee Candidate</option>
+            <option value="admin">Administrator</option>
+            <option value="employer">Employer / Recruiter</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="signupSkills">Technical Skills (comma-separated)</label>
+          <input type="text" id="signupSkills" class="form-control" placeholder="Python, Java, React, SQL, AWS">
+        </div>
+
+        <button type="submit" class="action-btn" style="margin-top: 1rem;">
+          <span>📝 Register Account</span>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ================= APPLY JOB MODAL ================= -->
+  <div class="modal-overlay" id="applyModal">
+    <div class="modal-card">
+      <button class="close-modal-btn" onclick="closeApplyModal()">✕</button>
+      <div id="applyModalContent">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DETAIL MODAL ================= -->
+  <div class="modal-overlay" id="mncModal">
+    <div class="modal-card">
+      <button class="close-modal-btn" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="presets.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
