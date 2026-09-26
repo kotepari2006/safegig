@@ -24,7 +24,7 @@ A beginner-friendly working prototype of SafeGig:
 
 4. Open:
 
-    https://safegig-1pjb.onrender.com/git add README.md
+    https://safegig-1pjb.onrender.com/ add README.md
 
 ## Demo
 The app starts with two sample projects.
