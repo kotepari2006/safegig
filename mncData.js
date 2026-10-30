@@ -1,4 +1,4 @@
-// Comprehensive database of 35+ MNCs with job opportunities, tech stacks, and domain metadata
+﻿// Comprehensive database of 35+ MNCs with job opportunities, tech stacks, and domain metadata
 
 const MNC_DATABASE = [
   {
@@ -12,7 +12,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Global leader in search, cloud computing, artificial intelligence, advertising, and hardware technologies.",
     careerUrl: "https://careers.google.com",
-    salaryRange: "$120,000 - $210,000 / ₹18 - ₹45 LPA",
+    salaryRange: "₹18 – ₹45 LPA",
     requiredSkills: [
       "Python", "C++", "Java", "Go", "Data Structures & Algorithms", "System Design",
       "Kubernetes", "GCP", "Distributed Systems", "Machine Learning", "TensorFlow", "SQL"
@@ -56,7 +56,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "World leader in OS, productivity software, Azure cloud computing, gaming, and OpenAI AI partnerships.",
     careerUrl: "https://careers.microsoft.com",
-    salaryRange: "$115,000 - $200,000 / ₹16 - ₹42 LPA",
+    salaryRange: "₹16 – ₹42 LPA",
     requiredSkills: [
       "C#", ".NET", "TypeScript", "React", "Azure", "Python", "System Design",
       "C++", "SQL", "DevOps", "Microservices", "CI/CD"
@@ -100,7 +100,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Pioneer of e-commerce, cloud computing (AWS), digital streaming, and supply chain technology.",
     careerUrl: "https://amazon.jobs",
-    salaryRange: "$110,000 - $195,000 / ₹15 - ₹40 LPA",
+    salaryRange: "₹15 – ₹40 LPA",
     requiredSkills: [
       "Java", "AWS", "Python", "Distributed Systems", "SQL", "DynamoDB",
       "Microservices", "Object Oriented Design", "Data Structures & Algorithms", "Kafka"
@@ -144,7 +144,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "World famous designer of iPhone, Mac, iOS, Apple Silicon, visionOS, and privacy-focused services.",
     careerUrl: "https://jobs.apple.com",
-    salaryRange: "$125,000 - $220,000 / ₹20 - ₹50 LPA",
+    salaryRange: "₹20 – ₹50 LPA",
     requiredSkills: [
       "Swift", "Objective-C", "C++", "Python", "iOS", "System Architecture",
       "Embedded Systems", "Machine Learning", "Metal", "Data Structures & Algorithms"
@@ -180,7 +180,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Social networking giant building Facebook, Instagram, WhatsApp, Llama open source AI, and Quest VR.",
     careerUrl: "https://metacareers.com",
-    salaryRange: "$130,000 - $230,000 / ₹22 - ₹55 LPA",
+    salaryRange: "₹22 – ₹55 LPA",
     requiredSkills: [
       "React", "JavaScript", "Python", "C++", "PyTorch", "GraphQL",
       "Distributed Systems", "PHP", "System Design", "Data Structures & Algorithms"
@@ -216,7 +216,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Pioneer in enterprise technology, Red Hat hybrid cloud, Watson AI platforms, and mainframe infrastructure.",
     careerUrl: "https://ibm.com/careers",
-    salaryRange: "$85,000 - $150,000 / ₹10 - ₹24 LPA",
+    salaryRange: "₹10 – ₹24 LPA",
     requiredSkills: [
       "Python", "Java", "OpenShift", "Docker", "Kubernetes", "Linux",
       "Cyber Security", "SQL", "Microservices", "Cloud Security", "Node.js"
@@ -288,7 +288,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Next-generation digital services and consulting leader enabling clients in 50+ countries to navigate digital transformation.",
     careerUrl: "https://infosys.com/careers",
-    salaryRange: "$55,000 - $100,000 / ₹5 - ₹14 LPA",
+    salaryRange: "₹5 – ₹14 LPA",
     requiredSkills: [
       "Java", "Python", "Angular", "React", "AWS", "SQL",
       "Spring Boot", "Microservices", "Selenium", "DevOps", "Node.js"
@@ -324,7 +324,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "World's largest professional services network providing audit, consulting, financial advisory, and risk management.",
     careerUrl: "https://deloitte.com/careers",
-    salaryRange: "$80,000 - $145,000 / ₹9 - ₹22 LPA",
+    salaryRange: "₹9 – ₹22 LPA",
     requiredSkills: [
       "Python", "SQL", "Power BI", "Cloud Strategy", "Salesforce", "SAP",
       "Cyber Security", "Data Analysis", "Excel", "Project Management", "Agile"
@@ -360,7 +360,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Fortune Global 500 company specializing in information technology services and management consulting.",
     careerUrl: "https://accenture.com/careers",
-    salaryRange: "$75,000 - $135,000 / ₹8 - ₹20 LPA",
+    salaryRange: "₹8 – ₹20 LPA",
     requiredSkills: [
       "Java", "React", "Node.js", "AWS", "Azure", "SAP",
       "Salesforce", "Python", "SQL", "DevOps", "Microservices", "Agile"
@@ -396,7 +396,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Worldwide leader in networking gear, cybersecurity products, cloud security platforms, and IoT hardware.",
     careerUrl: "https://jobs.cisco.com",
-    salaryRange: "$95,000 - $175,000 / ₹14 - ₹32 LPA",
+    salaryRange: "₹14 – ₹32 LPA",
     requiredSkills: [
       "C", "C++", "Python", "Networking", "Linux", "Kubernetes",
       "Cyber Security", "Go", "Docker", "System Design", "TCP/IP"
@@ -432,7 +432,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Database market leader powering high-performance Oracle Cloud Infrastructure (OCI) and enterprise ERP.",
     careerUrl: "https://oracle.com/careers",
-    salaryRange: "$100,000 - $180,000 / ₹15 - ₹35 LPA",
+    salaryRange: "₹15 – ₹35 LPA",
     requiredSkills: [
       "Java", "SQL", "Oracle Cloud", "Linux", "C++", "Microservices",
       "PL/SQL", "Python", "Kubernetes", "Distributed Systems", "Data Structures & Algorithms"
@@ -468,7 +468,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Global standard in ERP software powering supply chains, financial operations, and enterprise business intelligence.",
     careerUrl: "https://jobs.sap.com",
-    salaryRange: "$90,000 - $160,000 / ₹12 - ₹28 LPA",
+    salaryRange: "₹12 – ₹28 LPA",
     requiredSkills: [
       "Java", "Node.js", "SAP HANA", "TypeScript", "React", "Enterprise Software",
       "Python", "SQL", "ABAP", "Cloud Security", "Microservices"
@@ -496,7 +496,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Multinational information technology services and consulting company headquartered in Paris.",
     careerUrl: "https://capgemini.com/careers",
-    salaryRange: "$55,000 - $105,000 / ₹5 - ₹15 LPA",
+    salaryRange: "₹5 – ₹15 LPA",
     requiredSkills: [
       "Java", "Angular", "Docker", "Kubernetes", "SQL", "Power BI",
       "Python", "Spring Boot", "Selenium", "DevOps"
@@ -580,7 +580,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Multinational professional services firm offering assurance, tax, transaction, and tech advisory.",
     careerUrl: "https://ey.com/careers",
-    salaryRange: "$75,000 - $140,000 / ₹8 - ₹22 LPA",
+    salaryRange: "₹8 – ₹22 LPA",
     requiredSkills: [
       "SQL", "Python", "Power BI", "Cyber Security", "Cloud Governance", "Excel",
       "Data Analysis", "Agile", "Financial Tech"
@@ -636,7 +636,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Professional services network providing financial audit, tax, and technological advisory.",
     careerUrl: "https://kpmg.com/careers",
-    salaryRange: "$75,000 - $138,000 / ₹8 - ₹21 LPA",
+    salaryRange: "₹8 – ₹21 LPA",
     requiredSkills: [
       "Python", "SQL", "Cyber Security", "Power BI", "Risk Assessment", "Excel",
       "Data Analysis"
@@ -664,7 +664,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "America's largest bank leading investment banking, payment platforms, and high-frequency trading technology.",
     careerUrl: "https://jpmorganchase.com/careers",
-    salaryRange: "$105,000 - $185,000 / ₹16 - ₹38 LPA",
+    salaryRange: "₹16 – ₹38 LPA",
     requiredSkills: [
       "Java", "Python", "Spring Boot", "React", "SQL", "C++",
       "Kubernetes", "Microservices", "Data Structures & Algorithms", "Kafka"
@@ -700,7 +700,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Global investment banking, securities, and investment management firm with cutting edge financial engineering.",
     careerUrl: "https://goldmansachs.com/careers",
-    salaryRange: "$115,000 - $195,000 / ₹18 - ₹42 LPA",
+    salaryRange: "₹18 – ₹42 LPA",
     requiredSkills: [
       "Java", "C++", "Python", "SQL", "Microservices", "React",
       "Linux", "Data Structures & Algorithms", "System Design", "Kafka"
@@ -728,7 +728,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "American multinational investment bank and financial services company headquartered in Midtown Manhattan.",
     careerUrl: "https://morganstanley.com/careers",
-    salaryRange: "$100,000 - $180,000 / ₹15 - ₹35 LPA",
+    salaryRange: "₹15 – ₹35 LPA",
     requiredSkills: [
       "Java", "Python", "SQL", "Angular", "C++", "Linux",
       "Security", "Spring Boot", "Data Structures & Algorithms"
@@ -756,7 +756,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "South Korean multinational major in smartphones (Galaxy), semiconductors, Smart TVs, and AI camera vision.",
     careerUrl: "https://samsung.com/careers",
-    salaryRange: "$90,000 - $165,000 / ₹14 - ₹32 LPA",
+    salaryRange: "₹14 – ₹32 LPA",
     requiredSkills: [
       "Kotlin", "Java", "C++", "Android", "TensorFlow", "Python",
       "Computer Vision", "Linux", "Data Structures & Algorithms", "Embedded Systems"
@@ -784,7 +784,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Creator of Photoshop, Illustrator, Acrobat PDF, Premiere Pro, Firefly AI, and Experience Cloud.",
     careerUrl: "https://adobe.com/careers",
-    salaryRange: "$110,000 - $190,000 / ₹18 - ₹40 LPA",
+    salaryRange: "₹18 – ₹40 LPA",
     requiredSkills: [
       "C++", "JavaScript", "React", "WebAssembly", "Python", "Machine Learning",
       "System Design", "UI / UX", "Data Structures & Algorithms"
@@ -812,7 +812,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "World leader in customer relationship management (CRM) cloud, Einstein AI, Slack, and Tableau.",
     careerUrl: "https://salesforce.com/careers",
-    salaryRange: "$110,000 - $185,000 / ₹16 - ₹36 LPA",
+    salaryRange: "₹16 – ₹36 LPA",
     requiredSkills: [
       "Java", "Apex", "Lightning", "Web Components", "Python", "AWS",
       "JavaScript", "Microservices", "System Design"
@@ -840,7 +840,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Pioneer of x86 microprocessor architecture, semiconductor fabrication, and AI silicon software enablement.",
     careerUrl: "https://jobs.intel.com",
-    salaryRange: "$95,000 - $170,000 / ₹14 - ₹32 LPA",
+    salaryRange: "₹14 – ₹32 LPA",
     requiredSkills: [
       "C", "C++", "Python", "Linux", "FPGA", "SystemVerilog",
       "Deep Learning", "Embedded Systems", "Compiler Tech"
@@ -868,7 +868,7 @@ const MNC_DATABASE = [
     hiringStatus: "High Growth Hiring",
     description: "Dominant leader in GPU computing, CUDA software, AI supercomputers, and autonomous omniverse systems.",
     careerUrl: "https://nvidia.com/careers",
-    salaryRange: "$130,000 - $240,000 / ₹22 - ₹55 LPA",
+    salaryRange: "₹22 – ₹55 LPA",
     requiredSkills: [
       "C++", "CUDA", "Python", "Deep Learning", "PyTorch", "Linux",
       "System Architecture", "Computer Vision", "Parallel Programming"
@@ -896,7 +896,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Global ridesharing, Uber Eats food delivery, and logistics network powered by real-time spatial algorithms.",
     careerUrl: "https://uber.com/careers",
-    salaryRange: "$115,000 - $195,000 / ₹18 - ₹42 LPA",
+    salaryRange: "₹18 – ₹42 LPA",
     requiredSkills: [
       "Go", "Java", "Python", "React Native", "Distributed Systems", "Kafka",
       "SQL", "Microservices", "System Design"
@@ -924,7 +924,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "World's leading streaming entertainment service with 270+ million paid memberships across 190 countries.",
     careerUrl: "https://jobs.netflix.com",
-    salaryRange: "$140,000 - $260,000 / ₹25 - ₹60 LPA",
+    salaryRange: "₹25 – ₹60 LPA",
     requiredSkills: [
       "Java", "Node.js", "React", "AWS", "Spinnaker", "Kafka",
       "GraphQL", "Distributed Systems", "Microservices"
@@ -952,7 +952,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Digital payments pioneer operating PayPal, Venmo, Braintree, and Xoom payment gateways.",
     careerUrl: "https://paypal.com/careers",
-    salaryRange: "$100,000 - $175,000 / ₹15 - ₹35 LPA",
+    salaryRange: "₹15 – ₹35 LPA",
     requiredSkills: [
       "Java", "Node.js", "React", "Python", "SQL", "Machine Learning",
       "Security", "Microservices", "REST APIs"
@@ -980,7 +980,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "German multinational technology conglomerate focused on industry, infrastructure, transport, and healthcare.",
     careerUrl: "https://jobs.siemens.com",
-    salaryRange: "$70,000 - $130,000 / ₹8 - ₹20 LPA",
+    salaryRange: "₹8 – ₹20 LPA",
     requiredSkills: [
       "C++", "Python", "IoT", "Azure", "Java", "Linux",
       "Embedded Systems", "C#", "SQL"
@@ -1008,7 +1008,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Premium automotive manufacturer leading electric vehicles (iX series), autonomous driving, and connected vehicle cloud.",
     careerUrl: "https://bmwgroup.jobs",
-    salaryRange: "$75,000 - $140,000 / ₹10 - ₹22 LPA",
+    salaryRange: "₹10 – ₹22 LPA",
     requiredSkills: [
       "C++", "Python", "ROS", "React", "Cloud", "Automotive Systems",
       "Embedded Systems", "Linux", "C#"
@@ -1036,7 +1036,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Leading global supplier of technology and services across Mobility Solutions, Industrial Tech, and Building Tech.",
     careerUrl: "https://bosch.com/careers",
-    salaryRange: "$65,000 - $125,000 / ₹7 - ₹18 LPA",
+    salaryRange: "₹7 – ₹18 LPA",
     requiredSkills: [
       "C", "C++", "Python", "Linux", "Machine Learning", "Microcontrollers",
       "Embedded Systems", "CAN Bus", "AUTOSAR"
@@ -1064,7 +1064,7 @@ const MNC_DATABASE = [
     hiringStatus: "Actively Hiring",
     description: "Maker of Jira, Confluence, Trello, and Bitbucket powering modern agile teams worldwide.",
     careerUrl: "https://atlassian.com/careers",
-    salaryRange: "$110,000 - $185,000 / ₹17 - ₹38 LPA",
+    salaryRange: "₹17 – ₹38 LPA",
     requiredSkills: [
       "Java", "TypeScript", "React", "AWS", "Docker", "Kubernetes",
       "Node.js", "GraphQL", "Microservices"

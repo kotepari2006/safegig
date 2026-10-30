@@ -16,6 +16,7 @@ const path = require("path");
 const crypto = require("crypto");
 const { MNC_DATABASE } = require("./mncData");
 const { analyzeResumeAndMatch } = require("./resumeMatcher");
+const { generateCoverLetter } = require("./coverLetterGenerator");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,7 +24,13 @@ const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, "data.json");
 
 app.use(express.json({ limit: "10mb" }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"), {
+  setHeaders: (res, path) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  }
+}));
 
 // ===============================
 // PASSWORD HASHING & TOKENS
@@ -506,53 +513,120 @@ app.get("/api/applications", authenticate, (req, res) => {
   }
 });
 
-// SUBMIT NEW APPLICATION (Student / Employee)
+// SUBMIT / ADD NEW APPLICATION (Student, Employee, or manual Job Tracker entry)
 app.post("/api/applications", authenticate, (req, res) => {
-  const { mncId, company, positionTitle, deadline, notes } = req.body;
+  const { mncId, company, positionTitle, role, deadline, notes, status, url, dateApplied } = req.body;
+  const targetRole = positionTitle || role;
 
-  if (!company || !positionTitle) {
+  if (!company || !targetRole) {
     return res.status(400).json({
-      error: "Company name and position title are required to apply."
+      error: "Company name and position/role are required to track an application."
     });
   }
 
   const data = loadData();
   if (!Array.isArray(data.applications)) data.applications = [];
 
-  // Check if student has already applied for this company position
+  // Check if candidate already has an identical entry if mncId is passed
   const existingApp = data.applications.find(
     a => (a.userId === req.user.id || a.userEmail === req.user.email) &&
-         a.company.toLowerCase() === company.toLowerCase() &&
-         a.positionTitle.toLowerCase() === positionTitle.toLowerCase()
+         a.company.toLowerCase() === company.trim().toLowerCase() &&
+         (a.positionTitle || "").toLowerCase() === targetRole.trim().toLowerCase()
   );
 
-  if (existingApp) {
+  if (existingApp && mncId) {
     return res.status(409).json({
-      error: `You have already applied for "${positionTitle}" at ${company}. Status: ${existingApp.status}`,
+      error: `You have already tracked/applied for "${targetRole}" at ${company}. Status: ${existingApp.status}`,
       application: existingApp
     });
   }
 
+  const initialStatus = status || "Applied";
   const newApp = {
     id: `app_${data.nextAppId++}`,
     userId: req.user.id,
     userName: req.user.name,
     userEmail: req.user.email,
-    mncId: mncId || company.toLowerCase(),
-    company,
-    positionTitle,
-    deadline: deadline || "2026-11-30",
-    appliedAt: new Date().toISOString(),
-    status: "Under Review",
-    notes: notes || "Applied via SafeGig 1-Click Platform"
+    mncId: mncId || company.trim().toLowerCase().replace(/[^a-z0-9]/g, "_"),
+    company: company.trim(),
+    positionTitle: targetRole.trim(),
+    url: url || "",
+    deadline: deadline || "2026-12-31",
+    appliedAt: dateApplied ? new Date(dateApplied).toISOString() : new Date().toISOString(),
+    status: initialStatus,
+    notes: notes || "Tracked in SafeGig Job Tracker"
   };
 
   data.applications.unshift(newApp);
   saveData(data);
 
   res.status(201).json({
-    message: `Successfully applied to ${company} for ${positionTitle}!`,
+    message: `Application to ${company} for ${targetRole} successfully tracked!`,
     application: newApp
+  });
+});
+
+// UPDATE APPLICATION (Candidate owner or Admin: status, notes, url, deadline, role, company, dateApplied)
+app.patch("/api/applications/:id", authenticate, (req, res) => {
+  const { id } = req.params;
+  const { status, notes, url, deadline, positionTitle, role, company, dateApplied } = req.body;
+
+  const data = loadData();
+  const targetApp = (data.applications || []).find(a => String(a.id) === String(id));
+
+  if (!targetApp) {
+    return res.status(404).json({ error: "Application record not found." });
+  }
+
+  // Ensure permission: user owns the app or user is admin
+  if (req.user.role !== "admin" && targetApp.userId !== req.user.id && targetApp.userEmail !== req.user.email) {
+    return res.status(403).json({ error: "You do not have permission to modify this application." });
+  }
+
+  if (status !== undefined) targetApp.status = status;
+  if (notes !== undefined) targetApp.notes = notes;
+  if (url !== undefined) targetApp.url = url;
+  if (deadline !== undefined) targetApp.deadline = deadline;
+  if (company !== undefined) targetApp.company = company.trim();
+  if (positionTitle !== undefined || role !== undefined) {
+    targetApp.positionTitle = (positionTitle || role).trim();
+  }
+  if (dateApplied !== undefined) {
+    targetApp.appliedAt = new Date(dateApplied).toISOString();
+  }
+  targetApp.updatedAt = new Date().toISOString();
+
+  saveData(data);
+
+  res.json({
+    message: `Application for ${targetApp.company} updated successfully.`,
+    application: targetApp
+  });
+});
+
+// DELETE APPLICATION (Candidate owner or Admin)
+app.delete("/api/applications/:id", authenticate, (req, res) => {
+  const { id } = req.params;
+  const data = loadData();
+  const index = (data.applications || []).findIndex(a => String(a.id) === String(id));
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Application record not found." });
+  }
+
+  const targetApp = data.applications[index];
+
+  // Ensure permission
+  if (req.user.role !== "admin" && targetApp.userId !== req.user.id && targetApp.userEmail !== req.user.email) {
+    return res.status(403).json({ error: "You do not have permission to delete this application." });
+  }
+
+  data.applications.splice(index, 1);
+  saveData(data);
+
+  res.json({
+    message: `Application to ${targetApp.company} deleted successfully.`,
+    deletedId: id
   });
 });
 
@@ -561,7 +635,7 @@ app.patch("/api/admin/applications/:id/status", authenticate, requireRole("admin
   const { status } = req.body;
   const { id } = req.params;
 
-  const validStatuses = ["Accepted", "Rejected", "Under Review"];
+  const validStatuses = ["Accepted", "Rejected", "Under Review", "Applied", "Interview", "Offer"];
   if (!validStatuses.includes(status)) {
     return res.status(400).json({
       error: `Invalid status value. Allowed: ${validStatuses.join(", ")}`
@@ -585,6 +659,57 @@ app.patch("/api/admin/applications/:id/status", authenticate, requireRole("admin
     message: `Application status updated to "${status}" for ${targetApp.userName} at ${targetApp.company}.`,
     application: targetApp
   });
+});
+
+// ===============================
+// AI COVER LETTER GENERATION API
+// ===============================
+app.post("/api/cover-letter/generate", async (req, res) => {
+  try {
+    const {
+      company,
+      role,
+      jobDescription,
+      candidateName,
+      skills,
+      experience,
+      tone,
+      apiKey
+    } = req.body;
+
+    let candidate = candidateName;
+    let candidateSkills = skills;
+
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.split(" ")[1];
+      const data = loadData();
+      const session = (data.sessions || []).find(s => s.token === token);
+      if (session) {
+        const user = (data.users || []).find(u => u.id === session.userId);
+        if (user) {
+          if (!candidate) candidate = user.name;
+          if (!candidateSkills || candidateSkills.length === 0) candidateSkills = user.skills;
+        }
+      }
+    }
+
+    const result = await generateCoverLetter({
+      company,
+      role,
+      jobDescription,
+      candidateName: candidate || "Candidate",
+      skills: candidateSkills || [],
+      experience,
+      tone: tone || "professional",
+      apiKey
+    });
+
+    res.json(result);
+  } catch (err) {
+    console.error("Cover letter generation error:", err);
+    res.status(500).json({ error: "Failed to generate AI cover letter." });
+  }
 });
 
 // ===============================

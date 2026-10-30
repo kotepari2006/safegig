@@ -2,45 +2,151 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0B0F19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
   <title>MNC Job Portal, Applications & AI Resume Matcher | SafeGig</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=4.0">
+  <!-- Client-side PDF & DOCX Parsers for genuine resume upload extraction -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 </head>
 <body>
 
   <!-- ================= TOP NAVBAR ================= -->
-  <nav class="navbar">
+  <nav class="navbar" id="topNavbar">
     <a href="#" class="brand" onclick="switchTab('matcher')">
       Safe<span>Gig</span>
-      <span class="brand-badge">MNC & Applications Hub</span>
+      <span class="brand-badge">MNC Hub</span>
     </a>
 
-    <div class="nav-tabs">
+    <!-- DESKTOP NAV TABS (Transformable into Mobile Drawer on small screens) -->
+    <div class="nav-tabs" id="navTabsContainer">
+      <div class="drawer-header-brand" id="drawerHeaderBrand">
+        <div class="drawer-brand-wrap">
+          <span class="drawer-brand-title">Safe<span style="color:#60A5FA;">Gig</span></span>
+          <span class="brand-badge">MNC Hub</span>
+        </div>
+        <button class="drawer-close-btn" onclick="closeMobileNav()" aria-label="Close Navigation Drawer">✕</button>
+      </div>
+
+      <!-- User card inside drawer on mobile -->
+      <div class="drawer-user-card" id="drawerUserCard">
+        <!-- Rendered via JS -->
+      </div>
+
       <button class="nav-tab-btn active" id="tabBtnMatcher" onclick="switchTab('matcher')">
-        🎯 AI Resume Matcher
+        <span class="nav-tab-icon">🎯</span>
+        <span class="nav-tab-label">AI Resume Matcher</span>
       </button>
       <button class="nav-tab-btn" id="tabBtnDirectory" onclick="switchTab('directory')">
-        🏢 MNC Job Directory
+        <span class="nav-tab-icon">🏢</span>
+        <span class="nav-tab-label">MNC Job Directory</span>
       </button>
       <button class="nav-tab-btn" id="tabBtnApplications" onclick="switchTab('applications')">
-        💼 My Applications
+        <span class="nav-tab-icon">💼</span>
+        <span class="nav-tab-label">Kanban & Job Tracker</span>
       </button>
       <button class="nav-tab-btn" id="tabBtnAdmin" onclick="switchTab('admin')">
-        👑 Admin Portal
+        <span class="nav-tab-icon">👑</span>
+        <span class="nav-tab-label">Admin Portal</span>
       </button>
       <button class="nav-tab-btn" id="tabBtnBooster" onclick="switchTab('booster')">
-        ⚡ Live Skill Booster
+        <span class="nav-tab-icon">⚡</span>
+        <span class="nav-tab-label">Live Skill Booster</span>
       </button>
+
+      <!-- Drawer footer with quick device layout switch -->
+      <div class="drawer-device-section">
+        <div class="drawer-section-title">Layout Configuration:</div>
+        <div class="drawer-device-buttons">
+          <button class="drawer-dev-btn active" id="drawerBtnAuto" onclick="setDeviceMode('auto', event)">⚡ Auto</button>
+          <button class="drawer-dev-btn" id="drawerBtnLaptop" onclick="setDeviceMode('laptop', event)">💻 Laptop</button>
+          <button class="drawer-dev-btn" id="drawerBtnPhone" onclick="setDeviceMode('phone', event)">📱 Phone</button>
+        </div>
+      </div>
     </div>
 
-    <!-- USER AUTH CONTAINER IN NAVBAR -->
-    <div class="nav-user-area" id="navUserArea">
-      <!-- Rendered via JS based on login state -->
-      <button class="auth-modal-btn" onclick="openAuthModal()">
-        🔑 Login / Register
+    <!-- RIGHT CLUSTER (DEVICE CONFIG PICKER + USER AUTH + MOBILE MENU TOGGLE) -->
+    <div class="nav-right-cluster">
+      
+      <!-- DEVICE CONFIGURATION ADAPTATION BADGE & SWITCHER -->
+      <div class="device-config-pill" id="deviceConfigPill" onclick="toggleDeviceMenu(event)" title="Current device layout. Click to preview or toggle Laptop / Phone mode">
+        <span class="device-icon" id="deviceConfigIcon">💻</span>
+        <span class="device-label" id="deviceConfigLabel">Laptop</span>
+        <span class="device-caret">▾</span>
+        
+        <!-- Dropdown menu -->
+        <div class="device-dropdown" id="deviceDropdown" onclick="event.stopPropagation()">
+          <div class="device-dropdown-header">DISPLAY CONFIGURATION</div>
+          <button type="button" class="device-dropdown-item active" id="optModeAuto" onclick="setDeviceMode('auto', event)">
+            <span class="opt-icon">⚡</span>
+            <div class="opt-text">
+              <div class="opt-name">Auto-Detect</div>
+              <div class="opt-sub">Adapts live to screen size & touch</div>
+            </div>
+          </button>
+          <button type="button" class="device-dropdown-item" id="optModeLaptop" onclick="setDeviceMode('laptop', event)">
+            <span class="opt-icon">💻</span>
+            <div class="opt-text">
+              <div class="opt-name">Laptop / Desktop</div>
+              <div class="opt-sub">Multi-column widescreen & data table</div>
+            </div>
+          </button>
+          <button type="button" class="device-dropdown-item" id="optModePhone" onclick="setDeviceMode('phone', event)">
+            <span class="opt-icon">📱</span>
+            <div class="opt-text">
+              <div class="opt-name">Mobile Phone</div>
+              <div class="opt-sub">Bottom nav bar & mobile cards view</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="nav-user-area" id="navUserArea">
+        <!-- Rendered via JS based on login state -->
+        <button class="auth-modal-btn" onclick="openAuthModal()">
+          🔑 Login / Register
+        </button>
+      </div>
+      
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileNav()" aria-label="Toggle Navigation Menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
       </button>
     </div>
   </nav>
+
+  <!-- MOBILE BOTTOM NAVIGATION BAR (Thumb-friendly mobile app bar for phones) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
+    <button class="mob-bottom-btn active" id="mobTabBtnMatcher" onclick="switchTab('matcher')" aria-label="Resume Matcher">
+      <span class="mob-btn-icon">🎯</span>
+      <span class="mob-btn-text">Matcher</span>
+    </button>
+    <button class="mob-bottom-btn" id="mobTabBtnDirectory" onclick="switchTab('directory')" aria-label="MNC Directory">
+      <span class="mob-btn-icon">🏢</span>
+      <span class="mob-btn-text">Directory</span>
+    </button>
+    <button class="mob-bottom-btn" id="mobTabBtnApplications" onclick="switchTab('applications')" aria-label="Job Tracker">
+      <span class="mob-btn-icon">💼</span>
+      <span class="mob-btn-text">Job Track</span>
+      <span class="mob-badge-pill" id="mobAppCountBadge" style="display:none;">0</span>
+    </button>
+    <button class="mob-bottom-btn" id="mobTabBtnAdmin" onclick="switchTab('admin')" aria-label="Admin Portal">
+      <span class="mob-btn-icon">👑</span>
+      <span class="mob-btn-text">Admin</span>
+    </button>
+    <button class="mob-bottom-btn" id="mobTabBtnBooster" onclick="switchTab('booster')" aria-label="Skill Booster">
+      <span class="mob-btn-icon">⚡</span>
+      <span class="mob-btn-text">Booster</span>
+    </button>
+  </nav>
+
+  <!-- MOBILE NAV BACKDROP -->
+  <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
 
   <!-- ================= MAIN CONTAINER ================= -->
   <main class="main-container">
@@ -82,49 +188,78 @@
       <div class="matcher-layout">
         
         <!-- LEFT: UPLOAD & INPUT PANEL -->
-        <aside class="upload-panel">
-          <h2 class="panel-title">
-            📄 Resume Parser
-          </h2>
-
-          <!-- PRESET RESUMES SELECTOR -->
-          <div class="presets-box">
-            <div class="presets-label">
-              <span>Try 1-Click Preset Resumes:</span>
-            </div>
-            <div class="presets-grid">
-              <button class="preset-btn" onclick="loadPreset('fullstack')">
-                💻 Full-Stack Dev
-              </button>
-              <button class="preset-btn" onclick="loadPreset('datascience')">
-                🤖 Data Scientist
-              </button>
-              <button class="preset-btn" onclick="loadPreset('devops')">
-                ☁️ DevOps Engineer
-              </button>
-              <button class="preset-btn" onclick="loadPreset('cybersecurity')">
-                🛡️ Cyber Security
-              </button>
-            </div>
+        <aside class="upload-panel" id="uploadPanel">
+          <div class="panel-header-wrap">
+            <h2 class="panel-title">
+              📄 Resume Parser
+            </h2>
+            <div class="panel-subtitle-mobile">Upload or choose a preset to match 35+ MNCs</div>
           </div>
 
-          <!-- DROPZONE -->
-          <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-            <div class="dropzone-icon">📁</div>
-            <div class="dropzone-text">Click to upload or drag & drop</div>
-            <div class="dropzone-sub">Supports PDF, DOCX, TXT files</div>
-            <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx,.txt" onchange="handleFileUpload(event)">
+          <!-- MOBILE COLLAPSE BAR (Allows collapsing editor on phone after parsing to focus on matches) -->
+          <div class="mobile-editor-collapse-bar" id="mobileResumeCollapseBar" style="display:none;" onclick="toggleMobileResumeEditor()">
+            <div class="collapse-bar-left">
+              <span class="collapse-bar-icon">✓</span>
+              <span class="collapse-bar-title" id="collapseBarTitle">Resume Active</span>
+            </div>
+            <button type="button" class="collapse-bar-btn" id="collapseBarBtn">Show / Edit Text ▾</button>
           </div>
 
-          <!-- TEXT INPUT -->
-          <label class="textarea-label" for="resumeText">
-            Or Paste Resume Content / Bio Text:
-          </label>
-          <textarea id="resumeText" class="resume-textarea" placeholder="Paste your resume summary, technical skills, projects, and work experience here..."></textarea>
+          <div class="upload-panel-body" id="uploadPanelBody">
+            <!-- PRESET RESUMES SELECTOR -->
+            <div class="presets-box">
+              <div class="presets-label">
+                <span>Try 1-Click Preset Resumes:</span>
+              </div>
+              <div class="presets-grid">
+                <button class="preset-btn" onclick="loadPreset('fullstack')">
+                  💻 Full-Stack Dev
+                </button>
+                <button class="preset-btn" onclick="loadPreset('datascience')">
+                  🤖 Data Scientist
+                </button>
+                <button class="preset-btn" onclick="loadPreset('devops')">
+                  ☁️ DevOps Engineer
+                </button>
+                <button class="preset-btn" onclick="loadPreset('cybersecurity')">
+                  🛡️ Cyber Security
+                </button>
+              </div>
+            </div>
 
-          <button class="action-btn" onclick="analyzeResume()">
-            <span>🔍 Analyze Resume & Match MNCs</span>
-          </button>
+            <!-- DROPZONE -->
+            <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+              <div class="dropzone-icon">📁</div>
+              <div class="dropzone-text">Click to upload or drag & drop</div>
+              <div class="dropzone-sub">Supports PDF, DOCX, TXT files</div>
+              <input type="file" id="fileInput" class="file-input" accept=".pdf,.docx,.txt" onchange="handleFileUpload(event)">
+            </div>
+
+            <!-- PARSING STATUS & FILE CHIP -->
+            <div id="uploadParsingStatus" class="parsing-status-bar" style="display:none;">
+              <div class="parsing-spinner"></div>
+              <span id="uploadParsingText">Reading and extracting resume text...</span>
+            </div>
+
+            <div id="uploadedFileBadge" class="file-chip-badge" style="display:none;">
+              <span class="file-chip-icon">📄</span>
+              <div class="file-chip-details">
+                <span id="uploadedFileName" class="file-chip-name">resume.pdf</span>
+                <span id="uploadedFileSize" class="file-chip-size">(0 KB)</span>
+              </div>
+              <span class="file-chip-status">✓ Parsed</span>
+            </div>
+
+            <!-- TEXT INPUT -->
+            <label class="textarea-label" for="resumeText">
+              Or Paste / Edit Extracted Resume Content:
+            </label>
+            <textarea id="resumeText" class="resume-textarea" placeholder="Paste your resume summary, technical skills, projects, and work experience here..."></textarea>
+
+            <button class="action-btn" onclick="analyzeResume()">
+              <span>🔍 Analyze Resume & Match Companies</span>
+            </button>
+          </div>
         </aside>
 
         <!-- RIGHT: RESULTS PANEL -->
@@ -171,34 +306,156 @@
             </div>
           </div>
 
-          <!-- TOP 10 HIGH MATCH MNCS -->
-          <div>
-            <div class="section-header">
-              <h2 class="section-title">
-                🏆 Top 10 High Match MNCs
-                <span class="badge-count">1 - 10</span>
-              </h2>
-              <span class="top-badge">75% - 100% Fit</span>
+          <!-- ================= INTERACTIVE COMPANIES RESULTS SECTION ================= -->
+          <div class="company-results-section" id="companyResultsSection">
+
+            <!-- CONTROLS & FILTER TOOLBAR -->
+            <div class="results-toolbar">
+              <!-- ROW 1: View toggle + Match filter pills -->
+              <div class="toolbar-row-1">
+                <div class="view-mode-toggle">
+                  <button id="btnViewTable" class="view-mode-btn active" onclick="switchViewMode('table')">
+                    📊 Table View
+                  </button>
+                  <button id="btnViewCards" class="view-mode-btn" onclick="switchViewMode('cards')">
+                    🗂️ Cards View
+                  </button>
+                </div>
+                <div class="table-filter-pills">
+                  <button class="table-filter-pill active" id="filterPillAll" onclick="setTableFilter('ALL', this)">
+                    ⭐ All Matched (<span id="countPillAll">20</span>)
+                  </button>
+                  <button class="table-filter-pill" id="filterPillTop10" onclick="setTableFilter('TOP10', this)">
+                    🏆 Top 10 High Fit
+                  </button>
+                  <button class="table-filter-pill" id="filterPillMild10" onclick="setTableFilter('MILD10', this)">
+                    💡 10 Growth Fit
+                  </button>
+                </div>
+              </div>
+
+              <!-- ROW 2: Domain filter + Search + Export buttons -->
+              <div class="toolbar-row-2">
+                <select id="tableDomainSelect" class="table-domain-select" onchange="onTableFilterChange()">
+                  <option value="All">All Industries</option>
+                  <option value="Tech">Tech &amp; Cloud</option>
+                  <option value="Enterprise">Enterprise &amp; ERP</option>
+                  <option value="FinTech">Banking &amp; FinTech</option>
+                  <option value="Consulting">Consulting &amp; Big 4</option>
+                  <option value="Services">IT Services</option>
+                  <option value="Automotive">Automotive</option>
+                  <option value="Hardware">Hardware &amp; AI</option>
+                </select>
+                <div class="table-search-wrap toolbar-search-grow">
+                  <input type="text" id="tableSearchInput" class="table-search-input" placeholder="🔍 Search company, role, skill..." oninput="onTableSearchChange()">
+                  <button id="tableSearchClear" class="search-clear-btn" onclick="clearTableSearch()" style="display:none;">✕</button>
+                </div>
+                <div class="table-actions-group">
+                  <button class="btn-table-action" onclick="exportMatchesToCSV()" title="Export company results to CSV">
+                    📥 CSV
+                  </button>
+                  <button class="btn-table-action" onclick="printMatchReport()" title="Print / Save PDF Report">
+                    🖨️ Print
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <div class="mnc-cards-list" id="top10Container">
-              <!-- Rendered via JS -->
+            <!-- DYNAMIC METRICS SUMMARY BANNER -->
+            <div class="results-metrics-banner" id="tableMetricsBanner">
+              <div class="metric-chip">
+                <span class="metric-icon">🏢</span>
+                <span>Showing <strong id="metricShowingCount">20</strong> Matched Companies</span>
+              </div>
+              <div class="metric-chip highlight">
+                <span class="metric-icon">🎯</span>
+                <span>Top Match: <strong id="metricTopMatchName">Google (96%)</strong></span>
+              </div>
+              <div class="metric-chip">
+                <span class="metric-icon">💼</span>
+                <span><strong id="metricTotalOpenings">45+</strong> Active Openings</span>
+              </div>
+              <div class="metric-chip">
+                <span class="metric-icon">💰</span>
+                <span>Compensation: <strong id="metricCompRange">₹16 - ₹45 LPA</strong></span>
+              </div>
             </div>
-          </div>
 
-          <!-- 10 MILD MATCH MNCS -->
-          <div style="margin-top: 1rem;">
-            <div class="section-header">
-              <h2 class="section-title">
-                💡 10 Mild (Moderate Fit) MNCs
-                <span class="badge-count">11 - 20</span>
-              </h2>
-              <span class="mild-badge">45% - 74% Growth Fit</span>
+            <!-- VIEW 1: INTERACTIVE COMPANIES TABLE (PRIMARY) -->
+            <div id="companyTableView" class="table-responsive company-table-wrap">
+              <div class="mobile-table-hint">
+                <span>👈 Swipe table horizontally to view full columns 👉</span>
+              </div>
+              <table class="company-match-table" id="companyMatchTable">
+                <thead>
+                  <tr>
+                    <th class="th-rank sortable" onclick="setTableSort('rank')">
+                      # Rank <span id="sortRankIcon" class="sort-icon">▲</span>
+                    </th>
+                    <th class="th-company sortable" onclick="setTableSort('name')">
+                      Company & Domain <span id="sortNameIcon" class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-score sortable" onclick="setTableSort('score')">
+                      Match Fit & ATS <span id="sortScoreIcon" class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-skills sortable" onclick="setTableSort('skills')">
+                      Matched Skills & Gaps <span id="sortSkillsIcon" class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-position">Top Opening & Location</th>
+                    <th class="th-salary">Est. Compensation</th>
+                    <th class="th-deadline sortable" onclick="setTableSort('deadline')">
+                      Deadline <span id="sortDeadlineIcon" class="sort-icon">↕</span>
+                    </th>
+                    <th class="th-action">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="companyTableBody">
+                  <!-- Rendered dynamically via JS -->
+                </tbody>
+              </table>
+
+              <!-- EMPTY STATE IF SEARCH YIELDS NO RESULTS -->
+              <div id="tableEmptyState" class="table-empty-box" style="display:none;">
+                <div class="empty-icon">🔍</div>
+                <h3>No companies match your current filters</h3>
+                <p>Try clearing your search query or switching industry domains.</p>
+                <button class="quick-btn" onclick="resetTableFilters()">Reset All Filters</button>
+              </div>
             </div>
 
-            <div class="mnc-cards-list" id="mild10Container">
-              <!-- Rendered via JS -->
+            <!-- VIEW 2: CARDS VIEW (SECONDARY / TOGGLEABLE) -->
+            <div id="companyCardsView" style="display:none;">
+              <!-- TOP 10 HIGH MATCH MNCS -->
+              <div>
+                <div class="section-header">
+                  <h2 class="section-title">
+                    🏆 Top 10 High Match MNCs
+                    <span class="badge-count">1 - 10</span>
+                  </h2>
+                  <span class="top-badge">75% - 100% Fit</span>
+                </div>
+
+                <div class="mnc-cards-list" id="top10Container">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+
+              <!-- 10 MILD MATCH MNCS -->
+              <div style="margin-top: 1.5rem;">
+                <div class="section-header">
+                  <h2 class="section-title">
+                    💡 10 Mild (Moderate Fit) MNCs
+                    <span class="badge-count">11 - 20</span>
+                  </h2>
+                  <span class="mild-badge">45% - 74% Growth Fit</span>
+                </div>
+
+                <div class="mnc-cards-list" id="mild10Container">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
             </div>
+
           </div>
 
         </div>
@@ -233,22 +490,37 @@
       </div>
     </section>
 
-    <!-- ================= TAB 3: MY APPLICATIONS (STUDENT / EMPLOYEE) ================= -->
+    <!-- ================= TAB 3: KANBAN & JOB TRACKER ================= -->
     <section id="applicationsTab" class="tab-content" style="display:none">
-      <div class="section-header" style="margin-bottom: 1.5rem;">
-        <h2 class="section-title">
-          💼 My Applications Dashboard
-        </h2>
-        <span class="top-badge" id="myAppsRoleBadge">Student / Candidate View</span>
+      <div class="tracker-header-wrap">
+        <div>
+          <h2 class="section-title" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+            💼 Applications & Kanban Job Tracker
+          </h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Track applications across your interview pipeline, visualize progress, and generate AI-tailored cover letters.
+          </p>
+        </div>
+        <div class="tracker-header-actions">
+          <button class="action-btn" onclick="openAddJobModal()" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.2rem; width: auto; font-size: 0.9rem;">
+            <span>➕</span> Add Application
+          </button>
+          <button class="tracker-btn secondary" onclick="openCoverLetterModal()" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span>✨</span> AI Cover Letter
+          </button>
+          <button class="tracker-btn outline" onclick="exportApplicationsToCSV()" title="Export all tracked applications to CSV">
+            <span>📥</span> Export CSV
+          </button>
+        </div>
       </div>
 
-      <!-- DEMO QUICK LOGIN PROMPT BANNER FOR GUESTS -->
+      <!-- DEMO QUICK LOGIN / SYNC PROMPT FOR GUESTS -->
       <div class="guest-auth-prompt" id="guestAppsPrompt" style="display:none;">
-        <div class="prompt-icon">🔒</div>
+        <div class="prompt-icon">⚡</div>
         <div class="prompt-content">
-          <h3>Log in to view your submitted job applications</h3>
-          <p>Sign in as a student or employee to track where you have applied, view deadlines, and check if your application is Accepted, Rejected, or Under Review.</p>
-          <div class="quick-login-grid" style="margin-top: 1rem;">
+          <h3>Guest Tracking Mode Active</h3>
+          <p>Your applications are saved locally in your browser. Log in or create an account to sync seamlessly with SafeGig Cloud and unlock direct 1-click apply integration!</p>
+          <div class="quick-login-grid" style="margin-top: 0.75rem;">
             <button class="quick-btn student-quick" onclick="quickLogin('student@safegig.demo', 'password123')">
               ⚡ Quick Login as Demo Student
             </button>
@@ -259,40 +531,166 @@
         </div>
       </div>
 
-      <!-- APPLICATIONS CONTENT -->
-      <div id="applicationsContent">
-        <!-- SUMMARY STATS -->
-        <div class="apps-stats-grid">
-          <div class="stat-card">
-            <div class="stat-card-val" id="myTotalAppsVal">0</div>
-            <div class="stat-card-lbl">Total Submitted</div>
+      <!-- SUMMARY STATS TILES -->
+      <div class="apps-stats-grid" style="margin-bottom: 1.5rem;">
+        <div class="stat-card">
+          <div class="stat-card-val" id="myTotalAppsVal">0</div>
+          <div class="stat-card-lbl">Total Applications</div>
+        </div>
+        <div class="stat-card applied-card">
+          <div class="stat-card-val" id="myAppliedAppsVal">0</div>
+          <div class="stat-card-lbl" style="color: #60A5FA;">🔵 Applied</div>
+        </div>
+        <div class="stat-card pending-card">
+          <div class="stat-card-val" id="myPendingAppsVal">0</div>
+          <div class="stat-card-lbl" style="color: #FBBF24;">🟡 Interview / Review</div>
+        </div>
+        <div class="stat-card accepted-card">
+          <div class="stat-card-val" id="myAcceptedAppsVal">0</div>
+          <div class="stat-card-lbl" style="color: #34D399;">🟢 Offer / Accepted</div>
+        </div>
+        <div class="stat-card rejected-card">
+          <div class="stat-card-val" id="myRejectedAppsVal">0</div>
+          <div class="stat-card-lbl" style="color: #F87171;">🔴 Rejected</div>
+        </div>
+      </div>
+
+      <!-- VIEW SELECTOR & SEARCH BAR -->
+      <div class="tracker-toolbar">
+        <div class="view-toggle-group">
+          <button class="view-toggle-btn active" id="btnTrackerKanban" onclick="switchTrackerView('kanban')">
+            <span>📌</span> Kanban Board
+          </button>
+          <button class="view-toggle-btn" id="btnTrackerTable" onclick="switchTrackerView('table')">
+            <span>📋</span> List & Table
+          </button>
+          <button class="view-toggle-btn" id="btnTrackerDashboard" onclick="switchTrackerView('dashboard')">
+            <span>📊</span> Analytics
+          </button>
+        </div>
+
+        <div class="tracker-search-wrap">
+          <input type="text" id="trackerSearchInput" class="form-control tracker-search-input" placeholder="🔍 Search company, role, or notes..." oninput="handleTrackerSearch()">
+          <select id="trackerStatusFilter" class="form-control tracker-filter-select" onchange="handleTrackerFilterChange()">
+            <option value="ALL">All Statuses</option>
+            <option value="Applied">Applied</option>
+            <option value="Interview">Interview / In Review</option>
+            <option value="Offer">Offer / Accepted</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- VIEW 1: KANBAN BOARD -->
+      <div id="trackerKanbanContainer" class="tracker-view-panel">
+        <div class="kanban-board">
+          <!-- Column 1: Applied -->
+          <div class="kanban-column col-applied" ondragover="handleKanbanDragOver(event)" ondragleave="handleKanbanDragLeave(event)" ondrop="handleKanbanDrop(event, 'Applied')">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot dot-applied"></span>
+                <span class="kanban-col-title">Applied</span>
+              </div>
+              <span class="kanban-col-count" id="countApplied">0</span>
+            </div>
+            <div class="kanban-cards-list" id="kanbanColApplied">
+              <!-- Draggable cards rendered via JS -->
+            </div>
           </div>
-          <div class="stat-card accepted-card">
-            <div class="stat-card-val" id="myAcceptedAppsVal">0</div>
-            <div class="stat-card-lbl">🟢 Accepted</div>
+
+          <!-- Column 2: Interview / Under Review -->
+          <div class="kanban-column col-interview" ondragover="handleKanbanDragOver(event)" ondragleave="handleKanbanDragLeave(event)" ondrop="handleKanbanDrop(event, 'Interview')">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot dot-interview"></span>
+                <span class="kanban-col-title">Interview / Review</span>
+              </div>
+              <span class="kanban-col-count" id="countInterview">0</span>
+            </div>
+            <div class="kanban-cards-list" id="kanbanColInterview">
+              <!-- Draggable cards rendered via JS -->
+            </div>
           </div>
-          <div class="stat-card pending-card">
-            <div class="stat-card-val" id="myPendingAppsVal">0</div>
-            <div class="stat-card-lbl">🟡 Under Review</div>
+
+          <!-- Column 3: Offer / Accepted -->
+          <div class="kanban-column col-offer" ondragover="handleKanbanDragOver(event)" ondragleave="handleKanbanDragLeave(event)" ondrop="handleKanbanDrop(event, 'Offer')">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot dot-offer"></span>
+                <span class="kanban-col-title">Offer / Accepted</span>
+              </div>
+              <span class="kanban-col-count" id="countOffer">0</span>
+            </div>
+            <div class="kanban-cards-list" id="kanbanColOffer">
+              <!-- Draggable cards rendered via JS -->
+            </div>
           </div>
-          <div class="stat-card rejected-card">
-            <div class="stat-card-val" id="myRejectedAppsVal">0</div>
-            <div class="stat-card-lbl">🔴 Rejected</div>
+
+          <!-- Column 4: Rejected -->
+          <div class="kanban-column col-rejected" ondragover="handleKanbanDragOver(event)" ondragleave="handleKanbanDragLeave(event)" ondrop="handleKanbanDrop(event, 'Rejected')">
+            <div class="kanban-col-header">
+              <div class="kanban-col-title-wrap">
+                <span class="kanban-col-dot dot-rejected"></span>
+                <span class="kanban-col-title">Rejected</span>
+              </div>
+              <span class="kanban-col-count" id="countRejected">0</span>
+            </div>
+            <div class="kanban-cards-list" id="kanbanColRejected">
+              <!-- Draggable cards rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: TABLE & LIST -->
+      <div id="trackerTableContainer" class="tracker-view-panel" style="display:none;">
+        <div class="tracker-table-wrap">
+          <table class="tracker-table" id="trackerApplicationsTable">
+            <thead>
+              <tr>
+                <th>Company & Role</th>
+                <th>Status</th>
+                <th>Date Applied</th>
+                <th>Deadline</th>
+                <th>Job Link</th>
+                <th>Notes</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="trackerTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+          <div id="trackerTableEmpty" class="tracker-empty-state" style="display:none;">
+            <p>No matching applications found.</p>
+            <button class="action-btn" onclick="openAddJobModal()" style="display:inline-flex; width:auto; margin-top:0.75rem;">
+              + Add New Job Application
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: ANALYTICS & BREAKDOWN -->
+      <div id="trackerDashboardContainer" class="tracker-view-panel" style="display:none;">
+        <div class="analytics-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.15rem; color: #FFF; font-weight: 700;">
+              📈 Application Breakdown & Funnel
+            </h3>
+            <span id="trackerOfferRateBadge" class="offer-rate-badge">0% Conversion Rate</span>
+          </div>
+          <div class="progress-breakdown-list" id="trackerProgressBars">
+            <!-- Rendered via JS -->
           </div>
         </div>
 
-        <!-- FILTER CONTROLS -->
-        <div class="app-filters-row">
-          <span class="filter-lbl">Filter Applications:</span>
-          <button class="filter-pill active" onclick="filterMyApps('ALL', this)">All Applications</button>
-          <button class="filter-pill" onclick="filterMyApps('Accepted', this)">🟢 Accepted Only</button>
-          <button class="filter-pill" onclick="filterMyApps('Under Review', this)">🟡 Under Review</button>
-          <button class="filter-pill" onclick="filterMyApps('Rejected', this)">🔴 Rejected Only</button>
-        </div>
-
-        <!-- APPLICATIONS LIST -->
-        <div class="applications-grid" id="myApplicationsGrid">
-          <!-- Rendered via JS -->
+        <div class="analytics-card" style="margin-top: 1.5rem;">
+          <h3 style="font-size: 1.15rem; color: #FFF; font-weight: 700; margin-bottom: 1rem;">
+            🏢 Tracked Companies in Pipeline
+          </h3>
+          <div id="trackerCompanyPills" style="display:flex; flex-wrap:wrap; gap:0.6rem;">
+            <!-- Rendered via JS -->
+          </div>
         </div>
       </div>
     </section>
@@ -419,8 +817,9 @@
   </main>
 
   <!-- ================= AUTH MODAL (LOGIN / SIGNUP) ================= -->
-  <div class="modal-overlay" id="authModal">
+  <div class="modal-overlay" id="authModal" onclick="if(event.target===this)closeAuthModal()">
     <div class="modal-card auth-modal-card">
+      <div class="sheet-pull-handle"></div>
       <button class="close-modal-btn" onclick="closeAuthModal()">✕</button>
       
       <div class="auth-tabs">
@@ -513,8 +912,9 @@
   </div>
 
   <!-- ================= APPLY JOB MODAL ================= -->
-  <div class="modal-overlay" id="applyModal">
+  <div class="modal-overlay" id="applyModal" onclick="if(event.target===this)closeApplyModal()">
     <div class="modal-card">
+      <div class="sheet-pull-handle"></div>
       <button class="close-modal-btn" onclick="closeApplyModal()">✕</button>
       <div id="applyModalContent">
         <!-- Rendered via JS -->
@@ -523,14 +923,201 @@
   </div>
 
   <!-- ================= DETAIL MODAL ================= -->
-  <div class="modal-overlay" id="mncModal">
+  <div class="modal-overlay" id="mncModal" onclick="if(event.target===this)closeModal()">
     <div class="modal-card">
+      <div class="sheet-pull-handle"></div>
       <button class="close-modal-btn" onclick="closeModal()">✕</button>
       <div id="modalContent"></div>
     </div>
   </div>
 
-  <script src="presets.js"></script>
-  <script src="app.js"></script>
+  <!-- ================= ADD / EDIT JOB TRACKER MODAL ================= -->
+  <div class="modal-overlay" id="jobTrackerModal" onclick="if(event.target===this)closeJobTrackerModal()">
+    <div class="modal-card" style="max-width: 620px;">
+      <div class="sheet-pull-handle"></div>
+      <button class="close-modal-btn" onclick="closeJobTrackerModal()">✕</button>
+      <div style="margin-bottom: 1.25rem;">
+        <h2 id="jobModalTitle" style="font-size: 1.4rem; color: #FFF; font-weight: 800; margin-bottom: 0.25rem;">
+          ➕ Track Job Application
+        </h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Log an application into your pipeline to track interview stages, deadlines, and notes.
+        </p>
+      </div>
+
+      <form id="jobTrackerForm" onsubmit="handleSaveJobTracker(event)">
+        <input type="hidden" id="jobModalEditId" value="">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="jobModalCompany">Company Name *</label>
+            <input type="text" id="jobModalCompany" class="form-control" placeholder="e.g. Google, Stripe, Infosys" required>
+          </div>
+
+          <div class="form-group">
+            <label for="jobModalRole">Role / Position *</label>
+            <input type="text" id="jobModalRole" class="form-control" placeholder="e.g. SDE Intern, Frontend Dev" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="jobModalStatus">Application Stage</label>
+            <select id="jobModalStatus" class="form-control">
+              <option value="Applied">🔵 Applied</option>
+              <option value="Interview">🟡 Interview / Under Review</option>
+              <option value="Offer">🟢 Offer / Accepted</option>
+              <option value="Rejected">🔴 Rejected</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="jobModalDate">Date Applied *</label>
+            <input type="date" id="jobModalDate" class="form-control" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label for="jobModalDeadline">Deadline (Optional)</label>
+            <input type="date" id="jobModalDeadline" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="jobModalUrl">Job Posting URL (Optional)</label>
+            <input type="url" id="jobModalUrl" class="form-control" placeholder="https://careers...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="jobModalNotes">Notes & Follow-ups (Optional)</label>
+          <textarea id="jobModalNotes" class="resume-textarea" style="height: 80px;" placeholder="Referral details, recruiter contacts, technical interview prep..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem;">
+          <button type="button" class="tracker-btn outline" onclick="closeJobTrackerModal()">Cancel</button>
+          <button type="submit" class="action-btn" style="width: auto; padding: 0.65rem 1.5rem;">
+            <span id="jobModalSubmitBtnText">Save Application</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= AI COVER LETTER GENERATOR MODAL ================= -->
+  <div class="modal-overlay" id="coverLetterModal" onclick="if(event.target===this)closeCoverLetterModal()">
+    <div class="modal-card" style="max-width: 820px; max-height: 90vh; overflow-y: auto;">
+      <div class="sheet-pull-handle"></div>
+      <button class="close-modal-btn" onclick="closeCoverLetterModal()">✕</button>
+
+      <div style="margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.6rem;">🤖</span>
+          <div>
+            <h2 style="font-size: 1.4rem; color: #FFF; font-weight: 800; margin: 0;">
+              AI Cover Letter Generator
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.15rem;">
+              Craft customized, ATS-friendly cover letters tailored to any role in seconds.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GENERATION FORM -->
+      <div class="cl-generator-grid">
+        <div class="cl-inputs-col">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label for="clCompany">Target Company *</label>
+              <input type="text" id="clCompany" class="form-control" placeholder="e.g. Google, Microsoft, Uber" required>
+            </div>
+            <div class="form-group">
+              <label for="clRole">Target Role / Position *</label>
+              <input type="text" id="clRole" class="form-control" placeholder="e.g. Software Engineer, Data Scientist" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Letter Tone</label>
+            <div class="cl-tone-picker" id="clTonePicker">
+              <button type="button" class="cl-tone-btn active" data-tone="professional" onclick="selectClTone('professional', this)">
+                💼 Professional
+              </button>
+              <button type="button" class="cl-tone-btn" data-tone="enthusiastic" onclick="selectClTone('enthusiastic', this)">
+                🚀 Enthusiastic
+              </button>
+              <button type="button" class="cl-tone-btn" data-tone="confident" onclick="selectClTone('confident', this)">
+                🎯 Confident
+              </button>
+              <button type="button" class="cl-tone-btn" data-tone="concise" onclick="selectClTone('concise', this)">
+                ⚡ Concise
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="clSkills">Candidate Core Skills & Strengths</label>
+            <input type="text" id="clSkills" class="form-control" placeholder="Python, React, AWS, Problem Solving, DSA">
+          </div>
+
+          <div class="form-group">
+            <label for="clJobDesc">Job Description / Requirements (Optional)</label>
+            <textarea id="clJobDesc" class="resume-textarea" style="height: 70px;" placeholder="Paste relevant job responsibilities or required qualifications..."></textarea>
+          </div>
+
+          <!-- OPTIONAL GEMINI API KEY ACCORDION -->
+          <div class="cl-api-accordion">
+            <details>
+              <summary style="font-size: 0.8rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+                🔑 Optional: Use your own Google Gemini API Key
+              </summary>
+              <div style="margin-top: 0.5rem; padding: 0.6rem; background: var(--bg-card-secondary); border-radius: var(--radius-sm);">
+                <input type="password" id="clGeminiKey" class="form-control" placeholder="AIzaSy... (Saved in browser session)" style="font-size: 0.85rem;">
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.35rem;">
+                  Leave empty to use SafeGig's built-in intelligent AI engine (no API key required).
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <button type="button" id="clGenerateBtn" class="action-btn" onclick="handleGenerateCoverLetter()" style="margin-top: 0.75rem;">
+            <span>✨ Generate AI Cover Letter</span>
+          </button>
+        </div>
+
+        <!-- GENERATED PREVIEW COL -->
+        <div class="cl-output-col">
+          <div class="cl-output-header">
+            <span class="cl-output-title">📄 Generated Cover Letter</span>
+            <div class="cl-meta-tags">
+              <span id="clEngineBadge" class="cl-engine-tag" style="display:none;">SafeGig AI</span>
+              <span id="clWordCountBadge" class="cl-word-tag">0 words</span>
+            </div>
+          </div>
+
+          <textarea id="clOutputText" class="cl-output-textarea" placeholder="Your tailored cover letter will appear here... You can freely edit the text directly." spellcheck="true"></textarea>
+
+          <div class="cl-output-actions">
+            <button type="button" class="tracker-btn secondary" onclick="copyCoverLetter()" id="clCopyBtn">
+              <span>📋</span> Copy Text
+            </button>
+            <button type="button" class="tracker-btn outline" onclick="downloadCoverLetter()">
+              <span>📥</span> Download (.txt)
+            </button>
+            <button type="button" class="tracker-btn outline" onclick="printCoverLetter()">
+              <span>🖨️</span> Print / PDF
+            </button>
+            <button type="button" class="tracker-btn" id="clSaveToJobBtn" onclick="saveCoverLetterToSelectedJob()" style="display:none; background: #059669; color: #FFF;">
+              <span>💾</span> Attach to Job
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="presets.js?v=4.0"></script>
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>

@@ -21,6 +21,7 @@ const SKILL_DICTIONARY = [
   
   // Frontend & UI
   { name: "React", aliases: ["react", "reactjs", "react.js"] },
+  { name: "Next.js", aliases: ["nextjs", "next.js", "next"] },
   { name: "Angular", aliases: ["angular", "angularjs", "angular 2+"] },
   { name: "Vue.js", aliases: ["vue", "vuejs", "vue.js"] },
   { name: "HTML5", aliases: ["html", "html5"] },
@@ -34,6 +35,9 @@ const SKILL_DICTIONARY = [
   { name: ".NET", aliases: [".net", "dotnet", "asp.net", ".net core"] },
   { name: "REST APIs", aliases: ["rest api", "rest apis", "restful", "web apis"] },
   { name: "Microservices", aliases: ["microservices", "microservice", "distributed systems"] },
+  { name: "MongoDB", aliases: ["mongodb", "mongo", "nosql"] },
+  { name: "PostgreSQL", aliases: ["postgresql", "postgres"] },
+  { name: "Redis", aliases: ["redis", "caching"] },
 
   // Cloud & DevOps
   { name: "AWS", aliases: ["aws", "amazon web services", "ec2", "s3", "lambda", "redshift", "dynamodb"] },
@@ -193,15 +197,18 @@ function calculateMncMatch(mnc, extractedSkills, expLevel) {
   const finalScore = Math.max(15, Math.min(Math.round(matchScore), 99));
 
   // Determine open position matches
-  const matchingPositions = mnc.activePositions.map(pos => {
+  const defaultDeadlines = ["2026-10-31", "2026-11-15", "2026-11-30", "2026-12-15"];
+  const matchingPositions = mnc.activePositions.map((pos, pIdx) => {
     const posMatchedSkills = pos.skills.filter(s => candidateSkillsLower.includes(s.toLowerCase()));
     const posMatchPct = Math.round((posMatchedSkills.length / Math.max(pos.skills.length, 1)) * 100);
 
     return {
       title: pos.title,
-      type: pos.type,
-      location: pos.location,
-      experienceReq: pos.experienceReq,
+      type: pos.type || "Full-Time",
+      location: pos.location || "Global / Hybrid",
+      experienceReq: pos.experienceReq || "0-3 years",
+      skills: pos.skills || [],
+      deadline: pos.deadline || defaultDeadlines[(pIdx + (mnc.name.length)) % defaultDeadlines.length],
       matchedSkillsCount: posMatchedSkills.length,
       totalSkillsCount: pos.skills.length,
       posMatchPct: Math.max(posMatchPct, 40)
@@ -224,6 +231,8 @@ function calculateMncMatch(mnc, extractedSkills, expLevel) {
     logo: mnc.logo,
     domain: mnc.domain,
     tier: mnc.tier,
+    size: mnc.size || "50,000+ employees",
+    hiringStatus: mnc.hiringStatus || "Actively Hiring",
     headquarters: mnc.headquarters,
     salaryRange: mnc.salaryRange,
     careerUrl: mnc.careerUrl,
@@ -237,7 +246,7 @@ function calculateMncMatch(mnc, extractedSkills, expLevel) {
 }
 
 /**
- * Main matching function returning Top 10 MNCs and 10 Mild MNCs
+ * Main matching function returning Top 10 MNCs, 10 Mild MNCs and All Scored MNCs
  */
 function analyzeResumeAndMatch(resumeText) {
   const cleanText = resumeText || "";
@@ -266,6 +275,7 @@ function analyzeResumeAndMatch(resumeText) {
     },
     top10Matches: top10,
     mild10Matches: mild10,
+    allMatches: scoredMncs,
     totalMncsEvaluated: MNC_DATABASE.length
   };
 }
